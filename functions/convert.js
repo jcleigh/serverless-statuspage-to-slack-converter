@@ -2,14 +2,14 @@ const https = require('https');
 
 const statusColors = (status) => {
     const indicatorColors = {
-        "critical": "#e74c3c",
-        "major": "#e67e22",
-        "minor": "#f1c40f",
-        "maintenance": "#3498DB",
-        "none": "#333333"
+        critical: '#e74c3c',
+        major: '#e67e22',
+        minor: '#f1c40f',
+        maintenance: '#3498DB',
+        none: '#333333'
     };
 
-    return indicatorColors[status] || indicatorColors["none"];
+    return indicatorColors[status] || indicatorColors['none'];
 };
 
 exports.handler = (event) => {
