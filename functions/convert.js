@@ -13,63 +13,61 @@ const statusColors = (status) => {
 };
 
 exports.handler = (event) => {
-    if (!event.body) {
-        return 'ok';
-    }
-    
-    const body = JSON.parse(event.body);
+    if (event.body) {
+        const body = JSON.parse(event.body);
 
-    let statusObject = {
-        color: statusColors(body.page.status_indicator),
-        pretext: body.page.status_description
-    };
+        let statusObject = {
+            color: statusColors(body.page.status_indicator),
+            pretext: body.page.status_description
+        };
 
-    if (body.incident) {
-        Object.assign(statusObject, {
-            fallback: '[' + body.incident.status + ']: ' + body.incident.name,
-            title: body.incident.name + ' [' + body.incident.status + ']',
-            title_link: body.incident.shortlink,
-            text: body.incident.incident_updates[0].body
-        });
-    } else if (body.component) {
-        Object.assign(statusObject, {
-            fallback: body.component.name + ': [' + body.component.status + ']',
-            fields: [
-                {
-                    title: body.component.name,
-                    value: body.component.status
-                }
-            ]
-        });
-    }
-
-    const data = JSON.stringify({
-        attachments: [statusObject]
-    });
-
-    const options = {
-        hostname: 'hooks.slack.com',
-        path: `/services/${event.queryStringParameters.target}`,
-        port: 443,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': data.length
+        if (body.incident) {
+            Object.assign(statusObject, {
+                fallback: '[' + body.incident.status + ']: ' + body.incident.name,
+                title: body.incident.name + ' [' + body.incident.status + ']',
+                title_link: body.incident.shortlink,
+                text: body.incident.incident_updates[0].body
+            });
+        } else if (body.component) {
+            Object.assign(statusObject, {
+                fallback: body.component.name + ': [' + body.component.status + ']',
+                fields: [
+                    {
+                        title: body.component.name,
+                        value: body.component.status
+                    }
+                ]
+            });
         }
-    };
 
-    const req = https.request(options, (res) => {
-        console.log(`statusCode: ${res.statusCode}`);
+        const data = JSON.stringify({
+            attachments: [statusObject]
+        });
 
-        res.on('data', (d) => {
-            process.stdout.write(d)
-        })
-    });
+        const options = {
+            hostname: 'hooks.slack.com',
+            path: `/services/${event.queryStringParameters.target}`,
+            port: 443,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            }
+        };
 
-    req.on('error', (error) => {
-        console.error(error)
-    });
+        const req = https.request(options, (res) => {
+            console.log(`statusCode: ${res.statusCode}`);
 
-    req.write(data);
-    req.end();
+            res.on('data', (d) => {
+                process.stdout.write(d)
+            })
+        });
+
+        req.on('error', (error) => {
+            console.error(error)
+        });
+
+        req.write(data);
+        req.end();
+    }
 };
