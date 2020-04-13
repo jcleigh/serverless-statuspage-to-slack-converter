@@ -13,7 +13,7 @@ const statusColors = (status) => {
 };
 
 exports.handler = (event) => {
-    if (event.body) {
+    if (event && event.body) {
         const body = JSON.parse(event.body);
 
         let statusObject = {
