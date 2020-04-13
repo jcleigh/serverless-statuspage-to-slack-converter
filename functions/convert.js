@@ -13,6 +13,10 @@ const statusColors = (status) => {
 };
 
 exports.handler = (event) => {
+    if (!event.body) {
+        return 'ok';
+    }
+    
     const body = JSON.parse(event.body);
 
     let statusObject = {
