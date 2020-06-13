@@ -12,7 +12,7 @@ Note: This project has no dependencies. Running `npm install` or `yarn install` 
 1. Link your Netlify account to your repo.
 1. Subscribe to a Statuspage webhook using the following URL:
 ```
-https://<your-site-name>.netlify.com/.netlify/functions/convert?target=
+https://<your-site-name>.netlify.app/.netlify/functions/convert?target=
 ```
 where `<your-site-name>` is replaced by your Netlify site name 
 and the value of `target` is the unique end to the Slack incoming webhook URL 
